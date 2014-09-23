@@ -24,11 +24,13 @@ struct svm_problem
 
 enum { C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR };	/* svm_type */
 enum { LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED }; /* kernel_type */
+enum { ONE_V_ONE, ONE_V_ALL, CMP}; /* multi-class classification type */
 
 struct svm_parameter
 {
 	int svm_type;
 	int kernel_type;
+	int multiclass_type;	/* for multi-class svc */
 	int degree;	/* for poly */
 	double gamma;	/* for poly/rbf/sigmoid */
 	double coef0;	/* for poly/sigmoid */
@@ -64,11 +66,19 @@ struct svm_model
 	/* for classification only */
 
 	int *label;		/* label of each class (label[k]) */
+	int *cascade_order;	/* class indices in increasing order according to number of training data*/
 	int *nSV;		/* number of SVs for each class (nSV[k]) */
 				/* nSV[0] + nSV[1] + ... + nSV[k-1] = l */
 	/* XXX */
 	int free_sv;		/* 1 if svm_model is created by svm_load_model*/
 				/* 0 if svm_model is created by svm_train */
+};
+
+struct svm_class
+{
+	int index;
+	int label;
+	int count;
 };
 
 struct svm_model *svm_train(const struct svm_problem *prob, const struct svm_parameter *param);
