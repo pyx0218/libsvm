@@ -2255,7 +2255,8 @@ void svm_train_svc_one_versus_all(int l, int nr_class, const svm_parameter *para
 	decision_function *f = Malloc(decision_function,nr_class);
 
 	double *probA=NULL,*probB=NULL;
-	if(param->probability){
+	if (param->probability)
+	{
 		probA=Malloc(double,nr_class);
 		probB=Malloc(double,nr_class);
 	}
@@ -2757,6 +2758,14 @@ double svm_predict_values_svc_one_versus_one(const svm_model *model, const svm_n
 			for(k=0;k<cj;k++){
 				sum += coef2[sj+k] * kvalue[sj+k];
 			}
+				//printf("coef: %f kvalue: %f\n", coef1[si+k], kvalue[si+k]);
+				sum += coef1[si+k] * kvalue[si+k];
+			}
+			for(k=0;k<cj;k++){
+				//printf("coef: %f kvalue: %f\n", coef2[sj+k], kvalue[sj+k]);
+				sum += coef2[sj+k] * kvalue[sj+k];
+			}
+			//printf("sum: %f rho: %f\n", sum, model->rho[p]);
 			sum -= model->rho[p];
 			dec_values[p] = sum;
 
@@ -2829,6 +2838,13 @@ double svm_predict_values_svc_one_versus_all(const svm_model *model, const svm_n
 	}
 	if(flag)
 		info("\n");
+	for(i=1;i<nr_class;i++)
+	{
+		printf("%d %f\n", model->label[i], dec_values[i]);
+		if(dec_values[i] > dec_values[max_dec_idx])
+			max_dec_idx = i;
+	}
+	printf("\n");
 
 	free(kvalue);
 	free(start);
