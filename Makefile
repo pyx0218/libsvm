@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wconversion -O3 -fPIC
 SHVER = 2
 OS = $(shell uname)
 
-all: svm-train svm-predict svm-scale
+all: svm-train svm-predict svm-multiclass svm-scale
 
 lib: svm.o
 	if [ "$(OS)" = "Darwin" ]; then \
@@ -17,6 +17,8 @@ svm-predict: svm-predict.c svm.o
 	$(CXX) $(CFLAGS) svm-predict.c svm.o -o svm-predict -lm
 svm-train: svm-train.c svm.o
 	$(CXX) $(CFLAGS) svm-train.c svm.o -o svm-train -lm
+svm-multiclass: svm-multiclass.c svm.o
+	$(CXX) $(CFLAGS) svm-multiclass.c svm.o -o svm-multiclass -lm
 svm-scale: svm-scale.c
 	$(CXX) $(CFLAGS) svm-scale.c -o svm-scale
 svm.o: svm.cpp svm.h
